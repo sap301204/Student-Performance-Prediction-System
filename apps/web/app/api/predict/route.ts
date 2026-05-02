@@ -23,18 +23,25 @@ export async function POST(request: Request) {
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json({
-      risk_probability: 0.72,
-      risk_percentage: 72,
+      risk_probability: 0.91,
+      risk_percentage: 91,
       at_risk: true,
-      risk_level: "Medium Risk",
-      interventions: [
-        "Attendance improvement plan",
-        "Extra quiz practice and doubt-solving sessions",
-        "Assignment tracking and mentor support",
-        "Structured weekly study timetable",
-        "Increase LMS engagement and learning activity"
+      risk_level: "High Risk",
+      top_risk_factors: [
+        "Low attendance: 58%",
+        "Low quiz average: 42%",
+        "Weak assignment score: 50%",
+        "Low midterm score: 45%",
+        "Low study hours: 3/week"
       ],
-      note: "Demo fallback response shown because FastAPI backend is not deployed."
+      interventions: [
+        "Create attendance improvement plan with weekly monitoring.",
+        "Assign extra quiz practice and revision sessions.",
+        "Track assignment completion and provide mentor support.",
+        "Schedule subject-wise doubt-solving session.",
+        "Create a structured weekly study timetable."
+      ],
+      note: "Demo fallback response shown because FastAPI backend is not deployed permanently."
     });
   }
 }

@@ -4,17 +4,16 @@ import pandas as pd
 
 
 def export_analytics_to_ts():
-    input_path = "data/student_analytics.csv"
-    output_path = "apps/web/app/analytics/analyticsData.ts"
+    input_path = "data/student_master_dataset.csv"
+    output_path = "apps/web/app/masterData.ts"
 
     if not os.path.exists(input_path):
         raise FileNotFoundError(
-            "data/student_analytics.csv not found. Run src/generate_analytics_data.py first."
+            "data/student_master_dataset.csv not found. Run src/generate_master_dataset.py first."
         )
 
     df = pd.read_csv(input_path)
 
-    # Keep all rows, but convert numpy/pandas values into normal Python values
     records = df.to_dict(orient="records")
 
     ts_content = "export const studentRows = "
@@ -26,7 +25,7 @@ def export_analytics_to_ts():
     with open(output_path, "w", encoding="utf-8") as file:
         file.write(ts_content)
 
-    print("analyticsData.ts created successfully.")
+    print("masterData.ts created successfully.")
     print(f"Saved at: {output_path}")
     print(f"Total rows exported: {len(records)}")
 

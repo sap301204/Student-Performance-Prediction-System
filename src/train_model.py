@@ -4,21 +4,38 @@ import pandas as pd
 
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    roc_auc_score
+)
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 
-from preprocess import add_features, build_preprocessor
+from preprocess import build_preprocessor
 
 
 def train():
     os.makedirs("models", exist_ok=True)
 
-    df = pd.read_csv("data/students.csv")
-    df = add_features(df)
+    df = pd.read_csv("data/student_master_dataset.csv")
 
-    X = df.drop(columns=["student_id", "final_score", "grade_band", "at_risk"])
+    print("Master dataset loaded successfully.")
+    print("Shape:", df.shape)
+
+    print("\nTarget Distribution:")
+    print(df["at_risk"].value_counts())
+
+    drop_columns = [
+        "student_id",
+        "student_name",
+        "at_risk"
+    ]
+
+    X = df.drop(columns=drop_columns)
     y = df["at_risk"]
 
     X_train, X_test, y_train, y_test = train_test_split(
@@ -32,13 +49,18 @@ def train():
     preprocessor = build_preprocessor()
 
     models = {
-        "Logistic Regression": LogisticRegression(max_iter=1000),
+        "Logistic Regression": LogisticRegression(
+            max_iter=1000,
+            class_weight="balanced"
+        ),
         "Random Forest": RandomForestClassifier(
             n_estimators=300,
             random_state=42,
             class_weight="balanced"
         ),
-        "Gradient Boosting": GradientBoostingClassifier(random_state=42)
+        "Gradient Boosting": GradientBoostingClassifier(
+            random_state=42
+        )
     }
 
     best_model = None

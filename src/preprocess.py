@@ -14,30 +14,26 @@ NUMERIC_FEATURES = [
     "lms_logins_per_week",
     "forum_posts",
     "commute_time",
-    "academic_score_avg",
-    "engagement_score"
+    "engagement_score",
+    "arts_score",
+    "english_score",
+    "math_score",
+    "phys_ed_score",
+    "science_score",
+    "average_marks",
+    "final_score",
+    "gpa"
 ]
 
 CATEGORICAL_FEATURES = [
     "gender",
     "school_type",
-    "parent_education"
+    "grade_name",
+    "branch",
+    "parent_education",
+    "exam_status",
+    "grade_band"
 ]
-
-def add_features(df):
-    df = df.copy()
-
-    df["academic_score_avg"] = (
-        df["quiz_avg"] + df["assignment_avg"] + df["midterm_score"]
-    ) / 3
-
-    df["engagement_score"] = (
-        df["study_hours_per_week"] * 0.4
-        + df["lms_logins_per_week"] * 0.3
-        + df["forum_posts"] * 0.3
-    )
-
-    return df
 
 def build_preprocessor():
     numeric_pipeline = Pipeline(steps=[
