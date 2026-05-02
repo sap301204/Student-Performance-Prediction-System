@@ -8,49 +8,57 @@ def generate_student_data(n_students=1500):
     student_ids = [f"STU{i:04d}" for i in range(1, n_students + 1)]
 
     gender = np.random.choice(["Male", "Female"], size=n_students)
-    school_type = np.random.choice(["Government", "Private", "Semi-Government"], size=n_students)
-    parent_education = np.random.choice(["High School", "Graduate", "Post Graduate"], size=n_students)
+    school_type = np.random.choice(
+        ["Government", "Private", "Semi-Government"],
+        size=n_students,
+        p=[0.4, 0.4, 0.2]
+    )
+    parent_education = np.random.choice(
+        ["High School", "Graduate", "Post Graduate"],
+        size=n_students,
+        p=[0.45, 0.4, 0.15]
+    )
 
-    prior_gpa = np.round(np.random.normal(7.0, 1.2, n_students), 2)
-    prior_gpa = np.clip(prior_gpa, 0, 10)
+    prior_gpa = np.round(np.random.normal(6.5, 1.5, n_students), 2)
+    prior_gpa = np.clip(prior_gpa, 2, 10)
 
-    attendance_pct = np.round(np.random.normal(75, 15, n_students), 2)
-    attendance_pct = np.clip(attendance_pct, 30, 100)
+    attendance_pct = np.round(np.random.normal(68, 18, n_students), 2)
+    attendance_pct = np.clip(attendance_pct, 25, 100)
 
-    quiz_avg = np.round(np.random.normal(65, 18, n_students), 2)
+    quiz_avg = np.round(np.random.normal(58, 20, n_students), 2)
     quiz_avg = np.clip(quiz_avg, 0, 100)
 
-    assignment_avg = np.round(np.random.normal(70, 15, n_students), 2)
+    assignment_avg = np.round(np.random.normal(62, 18, n_students), 2)
     assignment_avg = np.clip(assignment_avg, 0, 100)
 
-    midterm_score = np.round(np.random.normal(62, 20, n_students), 2)
+    midterm_score = np.round(np.random.normal(55, 22, n_students), 2)
     midterm_score = np.clip(midterm_score, 0, 100)
 
-    study_hours_per_week = np.round(np.random.normal(8, 4, n_students), 2)
-    study_hours_per_week = np.clip(study_hours_per_week, 0, 30)
+    study_hours_per_week = np.round(np.random.normal(6, 4, n_students), 2)
+    study_hours_per_week = np.clip(study_hours_per_week, 0, 25)
 
-    on_time_submission_pct = np.round(np.random.normal(72, 20, n_students), 2)
+    on_time_submission_pct = np.round(np.random.normal(65, 25, n_students), 2)
     on_time_submission_pct = np.clip(on_time_submission_pct, 0, 100)
 
-    lms_logins_per_week = np.random.poisson(5, n_students)
-    forum_posts = np.random.poisson(2, n_students)
+    lms_logins_per_week = np.random.poisson(4, n_students)
+    forum_posts = np.random.poisson(1.5, n_students)
 
-    commute_time = np.round(np.random.normal(35, 20, n_students), 2)
-    commute_time = np.clip(commute_time, 0, 120)
+    commute_time = np.round(np.random.normal(45, 25, n_students), 2)
+    commute_time = np.clip(commute_time, 0, 130)
 
-    noise = np.random.normal(0, 8, n_students)
+    noise = np.random.normal(0, 10, n_students)
 
     final_score = (
-        prior_gpa * 6
-        + attendance_pct * 0.15
-        + quiz_avg * 0.20
-        + assignment_avg * 0.20
-        + midterm_score * 0.25
-        + study_hours_per_week * 0.8
-        + on_time_submission_pct * 0.10
-        + lms_logins_per_week * 0.6
-        + forum_posts * 0.5
-        - commute_time * 0.05
+        prior_gpa * 4
+        + attendance_pct * 0.10
+        + quiz_avg * 0.18
+        + assignment_avg * 0.18
+        + midterm_score * 0.22
+        + study_hours_per_week * 0.60
+        + on_time_submission_pct * 0.08
+        + lms_logins_per_week * 0.40
+        + forum_posts * 0.30
+        - commute_time * 0.04
         + noise
     )
 
@@ -64,7 +72,7 @@ def generate_student_data(n_students=1500):
         include_lowest=True
     )
 
-    at_risk = (final_score < 50).astype(int)
+    at_risk = (final_score < 55).astype(int)
 
     df = pd.DataFrame({
         "student_id": student_ids,
@@ -90,9 +98,15 @@ def generate_student_data(n_students=1500):
 
 if __name__ == "__main__":
     os.makedirs("data", exist_ok=True)
+
     df = generate_student_data()
     df.to_csv("data/students.csv", index=False)
 
     print("Dataset created successfully.")
     print("Saved at: data/students.csv")
     print(df.head())
+
+    print("\nTarget distribution:")
+    print(df["at_risk"].value_counts())
+    print("\nTarget percentage:")
+    print(df["at_risk"].value_counts(normalize=True) * 100)
